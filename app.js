@@ -44,7 +44,7 @@ function render(){
  document.querySelectorAll('.nav-item[data-view]').forEach(b=>{const selected=b.dataset.view===view;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});
  $('#list-title').textContent=view==='favorites'?'ที่ที่อยากกลับไป':view==='open'?'พร้อมให้แวะไป':'สถานที่ของฉัน';
  const q=$('#search').value.trim().toLocaleLowerCase();
- const filtered=places.filter(p=>(view!=='favorites'||p.rating>=4)&&(category==='ทั้งหมด'||p.category===category)&&(!(view==='open'||$('#only-open').checked)||statusOf(p,now).kind==='open')&&[p.name,p.area,p.note].some(s=>s.toLocaleLowerCase().includes(q)));
+ const filtered=places.filter(p=>(view!=='favorites'||p.rating>=4)&&(category==='ทั้งหมด'||p.category===category)&&(!(view==='open'||$('#only-open').checked)||statusOf(p,now).kind==='open')&&PlaceTools.matches(p,q));
  $('#result-count').textContent=filtered.length;
  const accents=[['#fff1e5','#b48152'],['#edf6ef','#6e9275'],['#eaf3ff','#6894b6'],['#fff5da','#b79745'],['#f1eaff','#9570bc']];
  $('#places').innerHTML=filtered.map(p=>{
@@ -53,7 +53,7 @@ function render(){
    ${p.photo?`<img class="place-photo" src="${p.photo}" alt="${escapeHTML(p.name)}" loading="lazy">`:''}<div class="card-top"><div class="place-icon">${icon(ICONS[idx])}</div><div class="card-title"><div class="category">${p.category}</div><h3>${escapeHTML(p.name)}</h3></div><button class="favorite ${p.rating>=4?'selected':''}" data-favorite="${escapeHTML(p.id)}" aria-pressed="${p.rating>=4}" aria-label="${p.rating>=4?'เลิกชอบ':'ชอบ'} ${escapeHTML(p.name)}">${icon('heart')}</button><button class="edit" data-edit="${escapeHTML(p.id)}" aria-label="แก้ไข ${escapeHTML(p.name)}">${icon('edit')}</button></div>
    <div class="card-body">${p.area?`<p class="area">${icon('pin')}${escapeHTML(p.area)}</p>`:''}
    <a class="map-link" href="${escapeHTML(PlaceTools.mapLink(p))}" target="_blank" rel="noopener noreferrer">${icon('pin')}${p.mapsUrl||p.location?'เปิดตำแหน่งใน Google Maps':'ค้นหาสถานที่ใน Google Maps'}</a><div class="status-line"><span class="status ${s.kind}">${s.label}</span>${p.rating?`<span class="mini-rating" aria-label="ความรู้สึก: ${RATINGS[p.rating]}">${icon(p.rating>=4?'heart':'star')}${p.rating}/5</span>`:''}</div>
-   <div class="next">${s.detail}</div>${s.kind==='unknown'?`<button class="text-button" data-hours="${escapeHTML(p.id)}">＋ เพิ่มเวลาเปิด–ปิด</button>`:''}
+   <div class="place-tags" data-user-content>${(p.tags||[]).map(t=>`<button type="button" data-tag-search="${escapeHTML(t)}">${escapeHTML(t)}</button>`).join('')}</div><div class="next">${s.detail}</div>${s.kind==='unknown'?`<button class="text-button" data-hours="${escapeHTML(p.id)}">＋ เพิ่มเวลาเปิด–ปิด</button>`:''}
    ${p.note?`<p class="note"><span class="note-mark">บันทึกถึงตัวเอง</span>${escapeHTML(p.note)}</p>`:''}
    <details><summary>${icon('clock')} เวลาเปิด–ปิดทั้งสัปดาห์</summary>${p.schedule.map((d,i)=>`<div class="hours-row ${i===now.day?'current':''}"><span>${DAYS[i]}${i===now.day?' · วันนี้':''}</span><span>${d.mode==='closed'?'หยุด':d.mode==='unknown'?'ยังไม่ทราบ':d.slots.map(t=>`${t[0]}–${t[1]}${minutes(t[1])<minutes(t[0])?' (+1 วัน)':''}`).join('<br>')}</span></div>`).join('')}<div class="updated">แก้ไขล่าสุด ${new Intl.DateTimeFormat('th-TH',{timeZone:'Asia/Bangkok',dateStyle:'medium'}).format(new Date(p.updated))}</div></details></div>
   </article>`;
@@ -69,7 +69,7 @@ function openEditor(id){
  if(cloudMode&&!cloudReady){navigate('account');toast('กรุณาเข้าสู่ระบบและรอให้เชื่อมต่อคลาวด์ก่อน');return;}
  const p=places.find(x=>x.id===id),f=$('#place-form');f.reset();$('#form-error').textContent='';
  for(const name of ['id','name','category','rating','area','note'])f.elements[name].value=p?p[name]:({category:'อื่น ๆ',rating:0}[name]??'');
- scheduleDraft=p?structuredClone(p.schedule):DAYS.map(()=>({mode:'unknown',slots:[]}));renderSchedule();$('#editor-title').textContent=p?'แก้ไขสถานที่':'เพิ่มสถานที่';$('#delete-place').hidden=!p;QuickEditor.reset(p);$('#note-details').open=Boolean(p?.note);$('#editor').showModal();
+ scheduleDraft=p?structuredClone(p.schedule):DAYS.map(()=>({mode:'unknown',slots:[]}));renderSchedule();$('#editor-title').textContent=p?'แก้ไขสถานที่':'เพิ่มสถานที่';$('#delete-place').hidden=!p;TagEditor.reset(p,places);QuickEditor.reset(p);$('#note-details').open=Boolean(p?.note);$('#editor').showModal();
 }
 const pageFilters={};
 function navigate(next,historyChange=true){
@@ -94,6 +94,7 @@ document.addEventListener('click',async e=>{
 });
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
+ if(b.hasAttribute('data-tag-search')){$('#search').value=b.dataset.tagSearch;render();window.scrollTo({top:0,behavior:'instant'});}
  if(b.hasAttribute('data-add'))openEditor();
  if(b.hasAttribute('data-edit'))openEditor(b.dataset.edit);
  if(b.hasAttribute('data-category')){category=b.dataset.category;render();}
@@ -107,7 +108,7 @@ document.addEventListener('click',e=>{
 $('#schedule-editor').addEventListener('change',e=>{if(e.target.hasAttribute('data-day')){const d=scheduleDraft[Number(e.target.dataset.day)];d.mode=e.target.value;d.slots=d.mode==='open'?(d.slots.length?d.slots:[['09:00','18:00']]):[];renderSchedule();}});
 $('#schedule-editor').addEventListener('input',e=>{if(e.target.hasAttribute('data-time')){const [i,j,k]=e.target.dataset.time.split(',').map(Number);scheduleDraft[i].slots[j][k]=e.target.value;}});
 $('#search').addEventListener('input',render);$('#only-open').addEventListener('change',()=>{if(view==='open'&&!$('#only-open').checked)view='all';render();});
-$('#place-form').addEventListener('submit',async e=>{e.preventDefault();const f=e.currentTarget;let extras;try{extras=QuickEditor.collect();}catch(err){$('#form-error').textContent=err.message;return;}const p={...extras,id:f.elements.id.value||newId(),name:f.elements.name.value.trim(),category:f.elements.category.value,rating:Number(f.elements.rating.value),area:f.elements.area.value.trim(),note:f.elements.note.value.trim(),schedule:structuredClone(scheduleDraft),updated:new Date().toISOString()};if(!validPlace(p)){$('#form-error').textContent='กรุณาระบุชื่อและเวลาให้ครบ เวลาเปิดและปิดต้องไม่เท่ากัน';return;}try{if(cloudMode)await requireCloud().put(p);else save([...places.filter(x=>x.id!==p.id),p]);$('#editor').close();toast('บันทึกสถานที่แล้ว');}catch(err){$('#form-error').textContent=err.message;}});
+$('#place-form').addEventListener('submit',async e=>{e.preventDefault();const f=e.currentTarget;let extras;try{extras=QuickEditor.collect();extras.tags=TagEditor.collect();}catch(err){$('#form-error').textContent=err.message;return;}const p={...extras,id:f.elements.id.value||newId(),name:f.elements.name.value.trim(),category:f.elements.category.value,rating:Number(f.elements.rating.value),area:f.elements.area.value.trim(),note:f.elements.note.value.trim(),schedule:structuredClone(scheduleDraft),updated:new Date().toISOString()};if(!validPlace(p)){$('#form-error').textContent='กรุณาระบุชื่อและเวลาให้ครบ เวลาเปิดและปิดต้องไม่เท่ากัน';return;}try{if(cloudMode)await requireCloud().put(p);else save([...places.filter(x=>x.id!==p.id),p]);$('#editor').close();toast('บันทึกสถานที่แล้ว');}catch(err){$('#form-error').textContent=err.message;}});
 $('#delete-place').addEventListener('click',()=>$('#delete-confirm').showModal());
 $('#confirm-delete').addEventListener('click',async()=>{const id=$('#place-form').elements.id.value;try{if(cloudMode)await requireCloud().remove(id);else save(places.filter(p=>p.id!==id));$('#delete-confirm').close();$('#editor').close();toast('ลบสถานที่แล้ว');}catch(err){$('#delete-confirm').close();$('#form-error').textContent=err.message;}});
 

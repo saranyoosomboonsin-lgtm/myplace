@@ -21,7 +21,7 @@ const PlaceTools=(()=>{
   try{const u=new URL(value);return u.protocol==='https:'&&!u.username&&!u.password&&((['google.com','www.google.com','maps.google.com','google.co.th','www.google.co.th'].includes(u.hostname)&&(u.pathname==='/maps'||u.pathname.startsWith('/maps/')))||u.hostname==='maps.app.goo.gl'||(u.hostname==='goo.gl'&&u.pathname.startsWith('/maps/')));}catch{return false;}
  }
  function validExtras(p){
-  return (p.photo===undefined||(typeof p.photo==='string'&&(p.photo===''||(/^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(p.photo)&&p.photo.length<=180000))))&&
+  return (p.tags===undefined||(Array.isArray(p.tags)&&p.tags.length<=12&&p.tags.every(t=>typeof t==='string'&&t.trim().length>0&&t.length<=40)&&new Set(p.tags).size===p.tags.length))&&(p.photo===undefined||(typeof p.photo==='string'&&(p.photo===''||(/^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(p.photo)&&p.photo.length<=180000))))&&
    (p.mapsUrl===undefined||safeMaps(p.mapsUrl))&&
    (p.location===undefined||p.location===null||(typeof p.location==='object'&&Number.isFinite(p.location.lat)&&Number.isFinite(p.location.lng)&&Math.abs(p.location.lat)<=90&&Math.abs(p.location.lng)<=180));
  }
@@ -43,5 +43,7 @@ const PlaceTools=(()=>{
   if(!days.length)throw Error('ข้อความนี้ไม่มีวันที่เปิด');
   return schedule(days,m[2].replace('.',':').padStart(5,'0'),m[3].replace('.',':').padStart(5,'0'));
  }
- return {schedule,simple,unknown,safeMaps,validExtras,mapLink,parse};
+ const normalize=s=>String(s).normalize('NFKC').toLocaleLowerCase().replace(/ชิว/g,'ชิล').replace(/\s+/g,' ').trim();
+ function matches(p,q){const hay=normalize([p.name,p.area,p.note,...(p.tags||[])].join(' '));return normalize(q).split(' ').every(w=>hay.includes(w));}
+ return {schedule,simple,unknown,safeMaps,validExtras,mapLink,parse,normalize,matches};
 })();

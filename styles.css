@@ -44,3 +44,7 @@ input[type=time]::-webkit-date-and-time-value{min-width:0;text-align:center}
 [data-theme=dark] .hours-row.current{background:#3b2e49;color:#efddff}[data-theme=dark] #result-count{background:#40314f;color:#ead7fa}
 [data-theme=dark] .empty :is(h2,p){color:#d2c2e0}
 [data-theme=dark] summary{color:#d3c2e2}[data-theme=dark] input::placeholder,[data-theme=dark] textarea::placeholder{color:#b5a5c3}
+/* Search field stays transparent in Safari, including focused dark mode. */
+:root[data-theme] .search input[type=search]{background:transparent!important;border:0!important;border-radius:0;box-shadow:none!important;outline:0!important;-webkit-appearance:none;appearance:none}
+:root[data-theme] .search{box-shadow:none}
+.tag-editor{margin:0 0 18px}.tag-editor>label{font-size:13px;color:var(--muted)}.tag-entry{display:flex;gap:8px;margin-top:8px}.tag-entry input{flex:1;min-width:0}.tag-entry button{border-radius:13px;background:#7652ba;color:white;padding:8px 12px;white-space:nowrap;font-size:13px}.place-tags{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.place-tags button{min-height:36px;border-radius:18px;background:#eee5f8;color:#654385;padding:6px 11px;font-size:12px;overflow-wrap:anywhere;max-width:100%}#selected-tags button{background:#7652ba;color:white}[data-theme=dark] .place-tags button{background:#463252;color:#efddff}[data-theme=dark] #selected-tags button{background:#825bc7;color:white}
