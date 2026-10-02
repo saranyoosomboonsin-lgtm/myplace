@@ -45,6 +45,7 @@ else if (!window.FIREBASE_CONFIG?.apiKey || !window.FIREBASE_CONFIG?.projectId) 
    remove:id=>write(uid=>dbSDK.deleteDoc(dbSDK.doc(collectionFor(uid),id))),
    import:items=>write(async uid=>{
     if(items.length>400)throw Error('นำเข้าได้ครั้งละไม่เกิน 400 สถานที่');
+    if(new TextEncoder().encode(JSON.stringify(items)).length>7_000_000)throw Error('รูปในไฟล์สำรองรวมกันใหญ่เกิน 7 MB กรุณาแบ่งรายการก่อนนำเข้า');
     const batch=dbSDK.writeBatch(db);
     items.forEach(p=>batch.set(dbSDK.doc(collectionFor(uid),p.id),p));
     await batch.commit();
