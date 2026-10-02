@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f7f6fb"><meta name="description" content="สมุดสถานที่ส่วนตัว เช็กเวลาเปิดปิดและเก็บความทรงจำก่อนออกเดินทาง">
+  <title>MyPlace — สถานที่ของฉัน</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%237652ba'/%3E%3Cpath d='M20 7a10 10 0 0 0-10 10c0 8 10 17 10 17s10-9 10-17A10 10 0 0 0 20 7' fill='white'/%3E%3Ccircle cx='20' cy='17' r='4' fill='%237652ba'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"><script src="app.js" defer></script>
+</head>
+<body>
+<header class="topbar"><a class="brand" href="./"><span class="brand-icon" data-icon="pin"></span><span>myplace<span class="brand-caption">พื้นที่เล็ก ๆ ของความทรงจำ</span></span></a><button id="backup-open" class="icon-btn" aria-label="สำรองและนำเข้าข้อมูล"><span data-icon="archive"></span></button></header>
+<main>
+  <section class="intro"><div class="eyebrow" id="today"></div><h1>ที่ที่เคยไป<br><span>เก็บไว้ ไม่ลืม.</span></h1><p>ร้านโปรด ตลาดใกล้บ้าน และทุกที่ของคุณ</p><button class="primary desktop-add" data-add><span data-icon="plus"></span> เพิ่มสถานที่</button></section>
+  <div class="overview"><button class="overview-card collection" data-view="all"><span class="stat-icon" data-icon="pin"></span><span class="stat-value" id="total">0</span><span class="stat-label">สถานที่ที่บันทึก</span><span class="stat-caption">ทุกที่ มีเรื่องให้จำ</span></button><button class="overview-card available" data-view="open"><span class="stat-icon" data-icon="clock"></span><span class="stat-value" id="open-count">0</span><span class="stat-label">เปิดอยู่ตอนนี้</span><span class="stat-caption">เช็กก่อนออกเดินทาง</span></button></div>
+  <div class="toolbar"><label class="search"><span data-icon="search"></span><input id="search" type="search" placeholder="วันนี้กำลังมองหาที่ไหน?" aria-label="ค้นหาสถานที่"></label></div>
+  <div class="filters" id="filters" aria-label="หมวดหมู่"></div>
+  <div class="list-heading"><h2><span id="list-title">สถานที่ของฉัน</span> <span id="result-count"></span></h2><label class="open-filter"><input id="only-open" type="checkbox"><span class="switch" aria-hidden="true"></span> เปิดตอนนี้</label></div>
+  <p class="schedule-note">เวลาประเทศไทย · สถานะตามตารางที่บันทึก อาจมีวันหยุดพิเศษ</p>
+  <div id="places" class="cards"></div>
+  <footer><span data-icon="lock"></span> เก็บบนเครื่องคุณ เพื่อครั้งถัดไปที่อยากกลับไป<br><button class="text-button" data-backup>สำรองความทรงจำของฉัน</button></footer>
+</main>
+<nav class="bottom-nav" aria-label="เมนูหลัก"><button class="nav-item active" data-view="all" aria-label="สถานที่ทั้งหมด" aria-pressed="true"><span data-icon="grid"></span><span>ทั้งหมด</span></button><button class="nav-item" data-view="favorites" aria-label="สถานที่ที่ชอบ" aria-pressed="false"><span data-icon="heart"></span><span>ที่ที่ชอบ</span></button><button class="nav-add" data-add aria-label="เพิ่มสถานที่"><span data-icon="plus"></span></button><button class="nav-item" data-view="open" aria-label="สถานที่เปิดตอนนี้" aria-pressed="false"><span data-icon="clock"></span><span>เปิดตอนนี้</span></button><button class="nav-item" data-backup aria-label="สำรองข้อมูล"><span data-icon="archive"></span><span>ข้อมูล</span></button></nav>
+<dialog id="editor"><form id="place-form"><div class="dialog-heading"><div><div class="eyebrow">MY PERSONAL PLACES</div><h2 id="editor-title">เพิ่มสถานที่</h2></div><button type="button" class="icon-btn" data-close aria-label="ปิด">×</button></div>
+<input type="hidden" name="id">
+<label>ชื่อสถานที่ <input name="name" required maxlength="100" placeholder="เช่น คลินิกประจำ"></label>
+<div class="two-col"><label>หมวดหมู่<select name="category"><option>ร้านอาหาร</option><option>ตลาด / ซื้อของ</option><option>คลินิก / สุขภาพ</option><option>ท่องเที่ยว</option><option>อื่น ๆ</option></select></label><label>ความรู้สึก<select name="rating"><option value="0">ยังไม่ได้ให้คะแนน</option><option value="5">♥ ชอบมาก อยากกลับไปอีก</option><option value="4">ชอบ</option><option value="3">เฉย ๆ</option><option value="2">ไม่ค่อยถูกใจ</option><option value="1">ไม่อยากกลับไป</option></select></label></div>
+<label>ย่าน / ที่อยู่<input name="area" maxlength="200" placeholder="เช่น ใกล้บ้าน ซอย 5"></label>
+<label>สิ่งที่อยากจำ<textarea name="note" rows="3" maxlength="2000" placeholder="ไปทำอะไร เมนูโปรด หรือข้อควรรู้ก่อนกลับไป"></textarea></label>
+<fieldset><legend>เวลาเปิด–ปิดประจำสัปดาห์</legend><p class="hint">ไม่ทราบเวลา ให้เลือก “ไม่ทราบ” · เพิ่มช่วงเวลาได้หากมีพักกลางวัน · เวลาปิดน้อยกว่าเวลาเปิดหมายถึงปิดวันถัดไป</p><div id="schedule-editor"></div></fieldset>
+<p id="form-error" class="error" role="alert"></p><div class="form-actions"><button type="button" id="delete-place" class="danger">ลบสถานที่</button><button type="submit" class="primary">บันทึกสถานที่</button></div></form></dialog>
+<dialog id="backup"><div class="dialog-heading"><h2>เก็บความทรงจำไว้</h2><button class="icon-btn" data-close aria-label="ปิด">×</button></div><p>ข้อมูลอยู่ในเบราว์เซอร์ของเครื่องนี้ ไม่ซิงก์ข้ามเครื่อง และอาจหายหากล้างข้อมูลเว็บไซต์</p><button id="export" class="primary">ดาวน์โหลดไฟล์สำรอง</button><label class="import-label">นำเข้าข้อมูลจากไฟล์สำรอง<input id="import" type="file" accept="application/json,.json"></label><p class="hint">นำเข้าจะรวมกับข้อมูลเดิม รายการที่มีรหัสเดียวกันจะใช้ข้อมูลจากไฟล์</p><p id="backup-error" class="error" role="alert"></p></dialog>
+<dialog id="delete-confirm" aria-labelledby="delete-title"><div class="dialog-heading"><h2 id="delete-title">ลบสถานที่นี้?</h2><button class="icon-btn" data-close aria-label="ปิด">×</button></div><p>สถานที่และบันทึกนี้จะถูกลบออกจากเครื่อง หากต้องการเก็บไว้ ให้สำรองข้อมูลก่อน</p><div class="form-actions"><button class="text-button" data-close>เก็บไว้ก่อน</button><button id="confirm-delete" class="danger">ลบสถานที่</button></div></dialog>
+<div id="toast" role="status"></div>
+</body></html>
+
