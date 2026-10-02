@@ -5,7 +5,7 @@ const QuickEditor=(()=>{
  function paint(){
   $('#quick-days').innerHTML=[1,2,3,4,5,6,0].map(i=>`<button type="button" data-quick-day="${i}" aria-pressed="${days.includes(i)}">${['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'][i]}</button>`).join('');
   $('#quick-times').hidden=!days.length;
-  $('#quick-summary').textContent=!simpleMode?'ใช้ตารางเฉพาะวันด้านล่าง · เลือกวันด้านบนเพื่อเปลี่ยนเป็นเวลาเดียวกัน':days.length?`เปิด ${days.length} วัน · ใช้เวลาเดียวกันทุกวันที่เลือก`:'ยังไม่ทราบเวลา · บันทึกไว้ก่อนแล้วค่อยเติมได้';
+  $('#quick-summary').textContent=!simpleMode?'ใช้ตารางเฉพาะวันด้านล่าง · เลือกวันด้านบนเพื่อเปลี่ยนเป็นเวลาเดียวกัน':days.length?`เลือก ${days.length} วัน · เว้นเวลาไว้ได้ แล้วค่อยเพิ่มภายหลัง`:'ยังไม่ทราบเวลา · บันทึกไว้ก่อนแล้วค่อยเติมได้';
  }
  function sync(strict=false){
   if(!simpleMode)return;
@@ -72,3 +72,4 @@ const QuickEditor=(()=>{
  });
  return {reset,collect};
 })();
+

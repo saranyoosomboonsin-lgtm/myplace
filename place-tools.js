@@ -4,11 +4,13 @@ const PlaceTools=(()=>{
  const unknown=()=>Array.from({length:7},()=>({mode:'unknown',slots:[]}));
  function schedule(days,start,end){
   if(!days.length)return unknown();
+  if(!start&&!end)return Array.from({length:7},(_,i)=>({mode:days.includes(i)?'unknown':'closed',slots:[]}));
   if(!time(start)||!time(end)||start===end)throw Error('ใส่เวลาเปิดและปิดให้ครบ และไม่ใช้เวลาเดียวกัน');
   return Array.from({length:7},(_,i)=>days.includes(i)?{mode:'open',slots:[[start,end]]}:{mode:'closed',slots:[]});
  }
  function simple(existing){
   if(existing.every(d=>d.mode==='unknown'))return {days:[],start:'',end:''};
+  if(existing.some(d=>d.mode==='unknown')&&existing.every(d=>d.mode==='unknown'||d.mode==='closed'))return {days:existing.flatMap((d,i)=>d.mode==='unknown'?[i]:[]),start:'',end:''};
   const active=existing.filter(d=>d.mode==='open');
   if(!active.length||existing.some(d=>d.mode==='unknown')||active.some(d=>d.slots.length!==1||JSON.stringify(d.slots)!==JSON.stringify(active[0].slots)))return null;
   return {days:existing.flatMap((d,i)=>d.mode==='open'?[i]:[]),start:active[0].slots[0][0],end:active[0].slots[0][1]};
