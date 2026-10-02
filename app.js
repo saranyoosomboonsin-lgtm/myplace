@@ -125,3 +125,11 @@ document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=icon(el.datase
 navigate(location.hash.slice(1)||'all',false);if(storageBlocked)toast('อ่านข้อมูลเดิมไม่ได้ กรุณาอย่าล้างข้อมูลเบราว์เซอร์');
 if(document.modelContext?.registerTool){try{Promise.resolve(document.modelContext.registerTool({name:'list_saved_places',description:'Read saved personal places and their current status based on recorded Bangkok opening hours.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute(input){if(!input||typeof input!=='object'||Object.keys(input).length)throw Error('Expected empty object');return {places:places.map(p=>({...p,status:statusOf(p)}))};}})).catch(()=>{});}catch{}}
 
+
+// Theme is a device preference; changing it does not write place data.
+const themeMedia=matchMedia('(prefers-color-scheme: dark)');
+let themePreference='system';try{themePreference=localStorage.getItem('myplace.theme')||'system';}catch{}
+if(!['system','light','dark'].includes(themePreference))themePreference='system';
+function applyTheme(){const dark=themePreference==='dark'||(themePreference==='system'&&themeMedia.matches);document.documentElement.dataset.theme=dark?'dark':'light';document.querySelector('meta[name="theme-color"]').content=dark?'#17141f':'#f7f6fb';$('#theme-choice').value=themePreference;}
+$('#theme-choice').addEventListener('change',e=>{themePreference=e.target.value;try{localStorage.setItem('myplace.theme',themePreference);}catch{}applyTheme();});
+themeMedia.addEventListener('change',applyTheme);applyTheme();

@@ -22,3 +22,25 @@ input[type=time]{max-width:100%;box-sizing:border-box;-webkit-appearance:none;ap
 input[type=time]::-webkit-date-and-time-value{min-width:0;text-align:center}
 /* Focused pages */
 [hidden]{display:none!important}main{display:block;max-width:960px;margin:auto;padding-top:12px}.topbar{max-width:960px;margin:auto;height:76px}.brand-caption{display:none}#page-name{font-size:14px;color:#806c98}#list-page .toolbar{margin-top:0}#account-page h1{font-size:27px;margin:12px 0 24px}#account-page .cloud-panel{margin:0 0 18px}.account-backup{display:flex;align-items:center;gap:16px;width:100%;padding:22px;text-align:left;background:white;border:1px solid #eee7f3;border-radius:20px;color:#49305f}.account-backup svg{width:25px;height:25px}.account-backup small{display:block;font-size:12px;color:#897992;margin-top:5px}.favorite{display:grid;place-items:center;width:44px;min-width:44px;height:44px;border-radius:14px;background:#f5f0fa;color:#a18aaa}.favorite svg{width:20px;height:20px}.favorite.selected{color:#b75786;background:#fbeaf3}.favorite.selected svg{fill:currentColor}.card-top{gap:10px}.card-title{min-width:0;flex:1}.card-title h3{overflow-wrap:anywhere}.card-top .edit{flex-shrink:0}#note-details textarea{margin-top:8px}#account-page{min-height:65vh}@media(max-width:650px){main{padding-top:4px}.topbar{height:70px}.list-heading{margin-top:18px}.card-top{padding:18px 15px;gap:8px}.place-icon{width:36px;height:36px;flex-shrink:0}.favorite{width:40px;min-width:40px}.card-top .edit{width:36px}}
+.theme-setting{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px;background:#fff;border:1px solid var(--line);border-radius:20px;margin-bottom:18px}.theme-setting select{width:auto;max-width:60%}
+:root[data-theme=dark]{color-scheme:dark;--ink:#eee8f7;--muted:#b2a6c1;--line:#44394f;background:#17141f;color:#eee8f7}
+[data-theme=dark] body{background:#17141f;color:#eee8f7}
+[data-theme=dark] :is(dialog,.card,.search,.chip,.account-backup,.theme-setting,.cloud-panel,.day-edit){background:#24202e;color:#eee8f7;border-color:#44394f}
+[data-theme=dark] :is(input:not([type=checkbox]),select,textarea,#place-form>label:first-of-type input){background:#30293b;color:#f3edf9;border-color:#51445e}
+[data-theme=dark] .search input{background:transparent;border:0}
+[data-theme=dark] :is(.hint,.schedule-note,.area,.category,.next,.updated,.note-mark,.eyebrow,#page-name,form>label,.two-col label,.quick-hours label,.extra label,.day-head label,.open-filter,#backup>p){color:#bdafcc}
+[data-theme=dark] :is(.card-top,.note){background:#30283b;color:#e6dbf0}
+[data-theme=dark] .place-icon{background:#44334f;color:#dbbaf3}
+[data-theme=dark] :is(.edit,.icon-btn,.favorite,.dialog-heading .icon-btn){background:#3c304a;color:#d7bdea;border-color:#51445e}
+[data-theme=dark] .favorite.selected{background:#5b2f48;color:#ffaad1}
+[data-theme=dark] :is(.quick-presets button,.quick-days button){background:#3a2d4b;color:#d9c4ef;border-color:#68527b}
+[data-theme=dark] :is(.chip.active,.quick-days button[aria-pressed=true],.primary){background:#825bc7;color:white}
+[data-theme=dark] .form-actions{background:#24202ef5;border-color:#44394f}
+[data-theme=dark] :is(.extra,.hours-row,.card details){border-color:#44394f}
+[data-theme=dark] :is(.text-button,.map-link,.add-time){color:#d4afff}
+[data-theme=dark] .status.open{background:#214535;color:#b0efca}[data-theme=dark] .status.closed{background:#4c303b;color:#ffbfca}[data-theme=dark] .status.unknown{background:#40364d;color:#dfc9f4}
+[data-theme=dark] .error{color:#ffacbf}[data-theme=dark] .danger{background:#4b2938;color:#ffc0cf}
+[data-theme=dark] .bottom-nav{background:#292033;border-color:#59426f}[data-theme=dark] .nav-item{color:#c9b7db}[data-theme=dark] .nav-item.active{background:#624583;color:#fff}
+[data-theme=dark] .hours-row.current{background:#3b2e49;color:#efddff}[data-theme=dark] #result-count{background:#40314f;color:#ead7fa}
+[data-theme=dark] .empty :is(h2,p){color:#d2c2e0}
+[data-theme=dark] summary{color:#d3c2e2}[data-theme=dark] input::placeholder,[data-theme=dark] textarea::placeholder{color:#b5a5c3}

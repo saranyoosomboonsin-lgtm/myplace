@@ -1,5 +1,6 @@
 'use strict';
 const QuickEditor=(()=>{
+ let savedLocation=null;
  let days=[],simpleMode=true,photo='',photoBusy=false,photoGeneration=0,parsed=null;
  const form=$('#place-form');
  function paint(){
@@ -16,7 +17,7 @@ const QuickEditor=(()=>{
  function mapSearch(){$('#search-maps').href=PlaceTools.mapLink({name:form.elements.name.value.trim(),area:form.elements.area.value.trim()});}
  function reset(p){
   photoGeneration++;photoBusy=false;photo=p?.photo||'';showPhoto();$('#place-photo').value='';$('#photo-status').textContent='';
-  form.elements.mapsUrl.value=p?.mapsUrl||'';form.elements.lat.value=p?.location?.lat??'';form.elements.lng.value=p?.location?.lng??'';
+  form.elements.mapsUrl.value=p?.mapsUrl||'';savedLocation=p?.location??null;
   const s=PlaceTools.simple(scheduleDraft);simpleMode=Boolean(s);days=s?.days||[];$('#quick-start').value=s?.start||'';$('#quick-end').value=s?.end||'';
   $('#advanced-hours').open=!simpleMode;$('#optional-info').open=false;$('#hours-text').value='';$('#parse-result').textContent='';$('#apply-parsed').hidden=true;parsed=null;
   paint();mapSearch();
@@ -24,9 +25,7 @@ const QuickEditor=(()=>{
  function collect(){
   if(photoBusy)throw Error('กำลังเตรียมรูป กรุณารอสักครู่');sync(true);
   const mapsUrl=form.elements.mapsUrl.value.trim();if(!PlaceTools.safeMaps(mapsUrl))throw Error('กรุณาวางลิงก์ https จากปุ่มแชร์ใน Google Maps');
-  const lat=form.elements.lat.value,lng=form.elements.lng.value;
-  if(Boolean(lat)!==Boolean(lng))throw Error('กรอกทั้งละติจูดและลองจิจูด หรือเว้นทั้งคู่');
-  const location=lat!==''?{lat:Number(lat),lng:Number(lng)}:null;
+  const location=savedLocation;
   const extras={mapsUrl,location,photo};if(!PlaceTools.validExtras(extras))throw Error('รูปหรือพิกัดไม่ถูกต้อง');return extras;
  }
  document.addEventListener('click',e=>{
