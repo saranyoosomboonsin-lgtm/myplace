@@ -6,7 +6,7 @@
   <title>MyPlace — สถานที่ของฉัน</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%237652ba'/%3E%3Cpath d='M20 7a10 10 0 0 0-10 10c0 8 10 17 10 17s10-9 10-17A10 10 0 0 0 20 7' fill='white'/%3E%3Ccircle cx='20' cy='17' r='4' fill='%237652ba'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"><script src="firebase-config.js" defer></script><script src="place-tools.js" defer></script><script src="app.js" defer></script><script src="quick-editor.js" defer></script><script type="module" src="cloud.js"></script>
+  <link rel="stylesheet" href="styles.css?v=20261002-fix1"><script src="firebase-config.js" defer></script><script src="place-tools.js" defer></script><script src="app.js" defer></script><script src="quick-editor.js" defer></script><script type="module" src="cloud.js?v=20261002-fix1"></script>
 </head>
 <body>
 <header class="topbar"><a class="brand" href="./"><span class="brand-icon" data-icon="pin"></span><span>myplace<span class="brand-caption">พื้นที่เล็ก ๆ ของความทรงจำ</span></span></a><button id="backup-open" class="icon-btn" aria-label="สำรองและนำเข้าข้อมูล"><span data-icon="archive"></span></button></header>
@@ -38,4 +38,5 @@
 <dialog id="delete-confirm" aria-labelledby="delete-title"><div class="dialog-heading"><h2 id="delete-title">ลบสถานที่นี้?</h2><button class="icon-btn" data-close aria-label="ปิด">×</button></div><p>สถานที่และบันทึกนี้จะถูกลบจากบัญชีที่ใช้งานและทุกเครื่องที่ซิงก์ หากต้องการเก็บไว้ ให้สำรองข้อมูลก่อน</p><div class="form-actions"><button class="text-button" data-close>เก็บไว้ก่อน</button><button id="confirm-delete" class="danger">ลบสถานที่</button></div></dialog>
 <div id="toast" role="status"></div>
 </body></html>
+
 

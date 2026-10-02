@@ -1,3 +1,7 @@
+// Firestore does not allow arrays directly inside arrays. Keep the UI/backup
+// format unchanged and translate time pairs only at the database boundary.
+const encodePlace = p => !Array.isArray(p.schedule) ? p : ({...p,schedule:p.schedule.map(d=>({...d,slots:d.slots.map(t=>({start:t[0],end:t[1]}))}))});
+const decodePlace = p => !Array.isArray(p.schedule) ? p : ({...p,schedule:p.schedule.map(d=>({...d,slots:Array.isArray(d.slots)?d.slots.map(t=>t && !Array.isArray(t) && typeof t==='object'?[t.start,t.end]:t):d.slots}))});
 const panel = document.querySelector('#cloud-panel');
 const status = document.querySelector('#cloud-status');
 const form = document.querySelector('#login-form');
@@ -41,13 +45,13 @@ else if (!window.FIREBASE_CONFIG?.apiKey || !window.FIREBASE_CONFIG?.projectId) 
    finally{writing=false;logout.disabled=false;updateConnection();}
   }
   window.myplaceCloud={
-   put:p=>write(uid=>dbSDK.setDoc(dbSDK.doc(collectionFor(uid),p.id),p)),
+   put:p=>write(uid=>dbSDK.setDoc(dbSDK.doc(collectionFor(uid),p.id),encodePlace(p))),
    remove:id=>write(uid=>dbSDK.deleteDoc(dbSDK.doc(collectionFor(uid),id))),
    import:items=>write(async uid=>{
     if(items.length>400)throw Error('นำเข้าได้ครั้งละไม่เกิน 400 สถานที่');
     if(new TextEncoder().encode(JSON.stringify(items)).length>7_000_000)throw Error('รูปในไฟล์สำรองรวมกันใหญ่เกิน 7 MB กรุณาแบ่งรายการก่อนนำเข้า');
     const batch=dbSDK.writeBatch(db);
-    items.forEach(p=>batch.set(dbSDK.doc(collectionFor(uid),p.id),p));
+    items.forEach(p=>batch.set(dbSDK.doc(collectionFor(uid),p.id),encodePlace(p)));
     await batch.commit();
    })
   };
@@ -60,7 +64,7 @@ else if (!window.FIREBASE_CONFIG?.apiKey || !window.FIREBASE_CONFIG?.projectId) 
    stop=dbSDK.onSnapshot(collectionFor(user.uid),{includeMetadataChanges:true},snapshot=>{
     if(generation!==epoch)return;
     ready=!snapshot.metadata.fromCache;
-    const items=snapshot.docs.map(d=>({...d.data(),id:d.id}));
+    const items=snapshot.docs.map(d=>decodePlace({...d.data(),id:d.id}));
     publish(items,ready);
     if(snapshot.metadata.hasPendingWrites)status.textContent='กำลังบันทึกขึ้นคลาวด์…';else updateConnection();
    },e=>{if(generation!==epoch)return;ready=false;publish();status.textContent=message(e);});
